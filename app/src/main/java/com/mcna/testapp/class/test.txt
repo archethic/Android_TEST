@@ -1,0 +1,558 @@
+package com.xfl.msgbot.script.api.legacy;
+
+import android.app.NotificationManager;
+import android.content.Context;
+import com.anjlab.android.iab.p017v3.Constants;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.xfl.msgbot.application.MainApplication;
+import com.xfl.msgbot.application.service.NotificationListener;
+import com.xfl.msgbot.script.BotFinder;
+import com.xfl.msgbot.script.MessageSender;
+import com.xfl.msgbot.script.ScriptManagerCompat;
+import com.xfl.msgbot.script.ScriptSettings;
+import com.xfl.msgbot.script.api.ArgumentResolver;
+import com.xfl.msgbot.utils.FileManager;
+import com.xfl.msgbot.utils.SharedVar;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import kotlin.Deprecated;
+import kotlin.Metadata;
+import kotlin.ReplaceWith;
+import kotlin.collections._Collections;
+import kotlin.jvm.internal.Intrinsics;
+import kotlin.jvm.internal.Reflection;
+import kotlin.reflect.KClass;
+import kotlin.text.StringsKt__StringsKt;
+import kotlinx.coroutines.Debug;
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.mozilla.javascript.C9079Context;
+import org.mozilla.javascript.Function;
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.Undefined;
+import org.mozilla.javascript.annotations.JSFunction;
+import org.mozilla.javascript.optimizer.OptRuntime;
+import p133p.p136b.p154d.p155a.outline;
+import p356r.p357m.C8815e;
+import p356r.p366r.C8848c;
+
+/* compiled from: Api.kt */
+@Metadata(m3680bv = {1, 0, 3}, m3679d1 = {"\u0000H\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0010\u000e\n\u0002\b\u0003\n\u0002\u0010\u000b\n\u0002\b\u0003\n\u0002\u0010\u0000\n\u0002\b\u0006\n\u0002\u0018\u0002\n\u0002\b\u0002\n\u0002\u0010\u0002\n\u0002\b\u0002\n\u0002\u0010\b\n\u0002\b\u0013\n\u0002\u0018\u0002\n\u0002\b\u001b\n\u0002\u0018\u0002\n\u0002\b\u0006\u0018\u00002\u00020\u0001B\u0017\u0012\u0006\u0010\u000b\u001a\u00020\u0002\u0012\u0006\u0010E\u001a\u00020\u0001¢\u0006\u0004\bK\u0010LJ3\u0010\b\u001a\u0004\u0018\u00010\u00022\u0006\u0010\u0003\u001a\u00020\u00022\u0006\u0010\u0004\u001a\u00020\u00022\u0006\u0010\u0005\u001a\u00020\u00022\b\u0010\u0007\u001a\u0004\u0018\u00010\u0006H\u0002¢\u0006\u0004\b\b\u0010\tJ\u0019\u0010\f\u001a\u00020\u00022\b\u0010\u000b\u001a\u0004\u0018\u00010\nH\u0002¢\u0006\u0004\b\f\u0010\rJ\u000f\u0010\u000e\u001a\u00020\u0002H\u0016¢\u0006\u0004\b\u000e\u0010\u000fJ\u000f\u0010\u0010\u001a\u00020\u0002H\u0016¢\u0006\u0004\b\u0010\u0010\u000fJ#\u0010\u0015\u001a\u00020\u00142\u0006\u0010\u0012\u001a\u00020\u00112\n\b\u0002\u0010\u0013\u001a\u0004\u0018\u00010\u0011H\u0007¢\u0006\u0004\b\u0015\u0010\u0016J!\u0010\u0019\u001a\u00020\u00142\u0006\u0010\u0005\u001a\u00020\u00022\b\b\u0002\u0010\u0018\u001a\u00020\u0017H\u0007¢\u0006\u0004\b\u0019\u0010\u001aJ\u0017\u0010\u001c\u001a\u00020\u00062\u0006\u0010\u001b\u001a\u00020\u0002H\u0007¢\u0006\u0004\b\u001c\u0010\u001dJ)\u0010\u001f\u001a\u00020\u00062\u0006\u0010\u001b\u001a\u00020\u00022\u0006\u0010\u0005\u001a\u00020\u00022\b\b\u0002\u0010\u001e\u001a\u00020\u0006H\u0007¢\u0006\u0004\b\u001f\u0010 J\u001f\u0010\"\u001a\u00020\u00062\u0006\u0010\u001b\u001a\u00020\u00022\u0006\u0010!\u001a\u00020\nH\u0007¢\u0006\u0004\b\"\u0010#J\u001b\u0010$\u001a\u00020\u00062\n\b\u0002\u0010\u000b\u001a\u0004\u0018\u00010\nH\u0007¢\u0006\u0004\b$\u0010%J\u001b\u0010&\u001a\u00020\u00062\n\b\u0002\u0010\u000b\u001a\u0004\u0018\u00010\nH\u0007¢\u0006\u0004\b&\u0010%J\u0019\u0010(\u001a\u00020\u00062\b\u0010'\u001a\u0004\u0018\u00010\nH\u0007¢\u0006\u0004\b(\u0010%J\u0019\u0010)\u001a\u00020\u00062\b\u0010'\u001a\u0004\u0018\u00010\nH\u0007¢\u0006\u0004\b)\u0010%J\u001b\u0010*\u001a\u00020\u00062\n\b\u0002\u0010\u000b\u001a\u0004\u0018\u00010\nH\u0007¢\u0006\u0004\b*\u0010%J\u0011\u0010,\u001a\u0004\u0018\u00010+H\u0007¢\u0006\u0004\b,\u0010-J+\u00101\u001a\u00020\u00062\u0006\u0010.\u001a\u00020\u00022\u0006\u0010/\u001a\u00020\u00022\n\b\u0002\u00100\u001a\u0004\u0018\u00010\u0017H\u0007¢\u0006\u0004\b1\u00102J'\u00104\u001a\u00020\u00172\n\b\u0002\u0010\u000b\u001a\u0004\u0018\u00010\n2\n\b\u0002\u00103\u001a\u0004\u0018\u00010\u0006H\u0007¢\u0006\u0004\b4\u00105J'\u00107\u001a\u00020\u00062\n\b\u0002\u0010\u000b\u001a\u0004\u0018\u00010\n2\n\b\u0002\u00106\u001a\u0004\u0018\u00010\u0006H\u0007¢\u0006\u0004\b7\u00108J\u001b\u00109\u001a\u00020\u00062\n\b\u0002\u0010\u000b\u001a\u0004\u0018\u00010\nH\u0007¢\u0006\u0004\b9\u0010%J'\u0010:\u001a\u00020\u00062\n\b\u0002\u0010\u000b\u001a\u0004\u0018\u00010\n2\n\b\u0002\u00106\u001a\u0004\u0018\u00010\u0006H\u0007¢\u0006\u0004\b:\u00108J5\u0010;\u001a\u0004\u0018\u00010\u00022\u0006\u0010\u0003\u001a\u00020\u00022\u0006\u0010\u0004\u001a\u00020\u00022\u0006\u0010\u0005\u001a\u00020\u00022\n\b\u0002\u0010\u0007\u001a\u0004\u0018\u00010\u0006H\u0007¢\u0006\u0004\b;\u0010\tJ\u0019\u0010<\u001a\u00020\u00172\b\u0010'\u001a\u0004\u0018\u00010\nH\u0007¢\u0006\u0004\b<\u0010=J\u001b\u0010?\u001a\u0004\u0018\u00010+2\b\u0010>\u001a\u0004\u0018\u00010\nH\u0007¢\u0006\u0004\b?\u0010@J\u0019\u0010A\u001a\u00020\u00062\b\u0010'\u001a\u0004\u0018\u00010\nH\u0007¢\u0006\u0004\bA\u0010%J\u000f\u0010B\u001a\u00020\u0014H\u0007¢\u0006\u0004\bB\u0010CR\u0016\u0010\u000b\u001a\u00020\u00028\u0002@\u0002X\u0004¢\u0006\u0006\n\u0004\b\u000b\u0010DR\u0016\u0010E\u001a\u00020\u00018\u0002@\u0002X\u0004¢\u0006\u0006\n\u0004\bE\u0010FR\u0013\u0010J\u001a\u00020G8G@\u0006¢\u0006\u0006\u001a\u0004\bH\u0010I¨\u0006M"}, m3678d2 = {"Lcom/xfl/msgbot/script/api/legacy/Api;", "Lorg/mozilla/javascript/ScriptableObject;", "", FirebaseAnalytics.Param.SOURCE, "target", "str", "", "errorToString", "doPapagoTranslate", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;)Ljava/lang/String;", "", "scriptName", "resolveScriptName", "(Ljava/lang/Object;)Ljava/lang/String;", "getClassName", "()Ljava/lang/String;", "toString", "Lorg/mozilla/javascript/Function;", "function", "onComplete", "", "UIThread", "(Lorg/mozilla/javascript/Function;Lorg/mozilla/javascript/Function;)V", "", "length", "showToast", "(Ljava/lang/String;I)V", "room", "canReply", "(Ljava/lang/String;)Z", "hideToast", "replyRoom", "(Ljava/lang/String;Ljava/lang/String;Z)Z", "packageName", "markAsRead", "(Ljava/lang/String;Ljava/lang/Object;)Z", Debug.DEBUG_PROPERTY_VALUE_OFF, "(Ljava/lang/Object;)Z", Debug.DEBUG_PROPERTY_VALUE_ON, "scriptNamee", "isOn", "isCompiled", "isCompiling", OptRuntime.GeneratorState.thisObj_TYPE, "getScriptNames", "()Lorg/mozilla/javascript/Scriptable;", Constants.RESPONSE_TITLE, FirebaseAnalytics.Param.CONTENT, "id", "makeNoti", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;)Z", "stopOnError", "prepare", "(Ljava/lang/Object;Ljava/lang/Boolean;)I", "throwOnError", "compile", "(Ljava/lang/Object;Ljava/lang/Boolean;)Z", "unload", "reload", "papagoTranslate", "getActiveThreadsCount", "(Ljava/lang/Object;)I", "targetScript", "interruptThreads", "(Ljava/lang/Object;)Lorg/mozilla/javascript/Scriptable;", "isTerminated", "gc", "()V", "Ljava/lang/String;", "scope", "Lorg/mozilla/javascript/ScriptableObject;", "Landroid/content/Context;", "getContext", "()Landroid/content/Context;", "context", "<init>", "(Ljava/lang/String;Lorg/mozilla/javascript/ScriptableObject;)V", "app_release"}, m3677k = 1, m3676mv = {1, 1, 15})
+public final class Api extends ScriptableObject {
+    private final ScriptableObject scope;
+    private final String scriptName;
+
+    /* JADX INFO: super call moved to the top of the method (can break code semantics) */
+    public Api(@NotNull String str, @NotNull ScriptableObject scriptableObject) {
+        super(scriptableObject, scriptableObject.getPrototype());
+        Intrinsics.checkNotNullParameter(str, "scriptName");
+        Intrinsics.checkNotNullParameter(scriptableObject, "scope");
+        this.scriptName = str;
+        this.scope = scriptableObject;
+    }
+
+    public static /* synthetic */ void UIThread$default(Api api, Function function, Function function2, int i, Object obj) {
+        if ((i & 2) != 0) {
+            function2 = null;
+        }
+        api.UIThread(function, function2);
+    }
+
+    public static /* synthetic */ boolean compile$default(Api api, Object obj, Boolean bool, int i, Object obj2) {
+        if ((i & 1) != 0) {
+            obj = null;
+        }
+        if ((i & 2) != 0) {
+            bool = Boolean.FALSE;
+        }
+        return api.compile(obj, bool);
+    }
+
+    private final String doPapagoTranslate(String str, String str2, String str3, Boolean bool) {
+        String str4;
+        try {
+            String encode = URLEncoder.encode(str3, "UTF-8");
+            URLConnection openConnection = new URL("https://openapi.naver.com/v1/papago/n2mt").openConnection();
+            if (openConnection != null) {
+                HttpURLConnection httpURLConnection = (HttpURLConnection) openConnection;
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setRequestProperty("X-Naver-Client-Id", "RNTM2Dvzllk50DwvS76r");
+                httpURLConnection.setRequestProperty("X-Naver-Client-Secret", "oEZcE2BiM3");
+                String str5 = "source=" + str + "&target=" + str2 + "&text=" + encode;
+                httpURLConnection.setDoOutput(true);
+                DataOutputStream dataOutputStream = new DataOutputStream(httpURLConnection.getOutputStream());
+                dataOutputStream.writeBytes(str5);
+                dataOutputStream.flush();
+                dataOutputStream.close();
+                if (httpURLConnection.getResponseCode() == 200) {
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+                    bufferedReader.close();
+                    return new JSONObject(_Collections.joinToString$default(Reader.readLines(bufferedReader), StringUtils.f29185LF, null, null, 0, null, null, 62, null)).getJSONObject("message").getJSONObject("result").getString("translatedText");
+                }
+                BufferedReader bufferedReader2 = new BufferedReader(new InputStreamReader(httpURLConnection.getErrorStream()));
+                throw new Exception(new JSONObject(_Collections.joinToString$default(Reader.readLines(bufferedReader2), StringUtils.f29185LF, null, null, 0, null, null, 62, null)).getString("errorMessage"));
+            }
+            throw new NullPointerException("null cannot be cast to non-null type java.net.HttpURLConnection");
+        } catch (Exception e) {
+            Intrinsics.checkNotNull(bool);
+            if (bool.booleanValue()) {
+                str4 = e.getMessage();
+            } else {
+                C9079Context.enter();
+                C9079Context.reportError(e.getMessage());
+                str4 = null;
+            }
+            e.printStackTrace();
+            return str4;
+        }
+    }
+
+    public static /* synthetic */ boolean isCompiling$default(Api api, Object obj, int i, Object obj2) {
+        if ((i & 1) != 0) {
+            obj = null;
+        }
+        return api.isCompiling(obj);
+    }
+
+    public static /* synthetic */ boolean makeNoti$default(Api api, String str, String str2, Integer num, int i, Object obj) {
+        if ((i & 4) != 0) {
+            num = Integer.valueOf(C8848c.roundToInt(Math.random() * ((double) 10000)) + 100);
+        }
+        return api.makeNoti(str, str2, num);
+    }
+
+    public static /* synthetic */ boolean off$default(Api api, Object obj, int i, Object obj2) {
+        if ((i & 1) != 0) {
+            obj = null;
+        }
+        return api.off(obj);
+    }
+
+    public static /* synthetic */ boolean on$default(Api api, Object obj, int i, Object obj2) {
+        if ((i & 1) != 0) {
+            obj = null;
+        }
+        return api.m4187on(obj);
+    }
+
+    public static /* synthetic */ String papagoTranslate$default(Api api, String str, String str2, String str3, Boolean bool, int i, Object obj) {
+        if ((i & 8) != 0) {
+            bool = Boolean.FALSE;
+        }
+        return api.papagoTranslate(str, str2, str3, bool);
+    }
+
+    public static /* synthetic */ int prepare$default(Api api, Object obj, Boolean bool, int i, Object obj2) {
+        if ((i & 1) != 0) {
+            obj = null;
+        }
+        if ((i & 2) != 0) {
+            bool = Boolean.FALSE;
+        }
+        return api.prepare(obj, bool);
+    }
+
+    public static /* synthetic */ boolean reload$default(Api api, Object obj, Boolean bool, int i, Object obj2) {
+        if ((i & 1) != 0) {
+            obj = null;
+        }
+        if ((i & 2) != 0) {
+            bool = Boolean.FALSE;
+        }
+        return api.reload(obj, bool);
+    }
+
+    public static /* synthetic */ boolean replyRoom$default(Api api, String str, String str2, boolean z, int i, Object obj) {
+        if ((i & 4) != 0) {
+            z = false;
+        }
+        return api.replyRoom(str, str2, z);
+    }
+
+    private final String resolveScriptName(Object obj) {
+        Object obj2 = ArgumentResolver.Companion.getDefault(obj, this.scriptName);
+        Objects.requireNonNull(obj2, "null cannot be cast to non-null type kotlin.String");
+        return StringsKt__StringsKt.removeSuffix((String) obj2, (CharSequence) ".js");
+    }
+
+    public static /* synthetic */ void showToast$default(Api api, String str, int i, int i2, Object obj) {
+        if ((i2 & 2) != 0) {
+            i = 0;
+        }
+        api.showToast(str, i);
+    }
+
+    public static /* synthetic */ boolean unload$default(Api api, Object obj, int i, Object obj2) {
+        if ((i & 1) != 0) {
+            obj = null;
+        }
+        return api.unload(obj);
+    }
+
+    @JSFunction("UIThread")
+    public final void UIThread(@NotNull Function function, @Nullable Function function2) {
+        Intrinsics.checkNotNullParameter(function, "function");
+        MainApplication.Companion.getUIHandler().post(new Api$UIThread$1(this, function, function2));
+    }
+
+    @JSFunction
+    public final boolean canReply(@NotNull String str) {
+        Intrinsics.checkNotNullParameter(str, "room");
+        String str2 = ScriptManagerCompat.Companion.getDebugRoom().get(this.scriptName);
+        return NotificationListener.Companion.hasSessionAnyPackage(str) || (str2 != null && Intrinsics.areEqual(str2, str));
+    }
+
+    @JSFunction
+    public final boolean compile(@Nullable Object obj, @Nullable Boolean bool) {
+        return reload(obj, bool);
+    }
+
+    @JSFunction
+    /* renamed from: gc */
+    public final void m4188gc() {
+        System.gc();
+    }
+
+    @JSFunction
+    public final int getActiveThreadsCount(@Nullable Object obj) {
+        return ScriptManagerCompat.Companion.getActiveThreadsCount(resolveScriptName(obj));
+    }
+
+    @Override // org.mozilla.javascript.ScriptableObject, org.mozilla.javascript.Scriptable
+    @NotNull
+    public String getClassName() {
+        String simpleName = Reflection.getOrCreateKotlinClass(Api.class).getSimpleName();
+        return simpleName != null ? simpleName : "Api";
+    }
+
+    @NotNull
+    @JSFunction("context")
+    public final Context getContext() {
+        return MainApplication.Companion.getContext();
+    }
+
+    @Nullable
+    @JSFunction
+    public final Scriptable getScriptNames() {
+        Scriptable scriptable;
+        C9079Context enter = C9079Context.enter();
+        try {
+            ScriptableObject scriptableObject = this.scope;
+            ArrayList<File> findAll = BotFinder.INSTANCE.findAll();
+            ArrayList arrayList = new ArrayList(C8815e.collectionSizeOrDefault(findAll, 10));
+            Iterator<T> it = findAll.iterator();
+            while (it.hasNext()) {
+                arrayList.add(it.next().getName());
+            }
+            scriptable = enter.newArray(scriptableObject, arrayList.toArray());
+        } catch (IllegalStateException unused) {
+            scriptable = null;
+        } catch (Throwable th) {
+            C9079Context.exit();
+            throw th;
+        }
+        C9079Context.exit();
+        return scriptable;
+    }
+
+    @Nullable
+    @JSFunction
+    public final Scriptable interruptThreads(@Nullable Object obj) {
+        Scriptable scriptable;
+        String resolveScriptName = resolveScriptName(obj);
+        C9079Context enter = C9079Context.enter();
+        try {
+            ScriptableObject scriptableObject = this.scope;
+            List<Runnable> shutdownThreads = ScriptManagerCompat.Companion.shutdownThreads(resolveScriptName);
+            if (shutdownThreads != null) {
+                scriptable = enter.newArray(scriptableObject, ((ArrayList) shutdownThreads).toArray());
+                C9079Context.exit();
+                return scriptable;
+            }
+            throw new NullPointerException("null cannot be cast to non-null type java.util.ArrayList<java.lang.Runnable>");
+        } catch (IllegalStateException unused) {
+            scriptable = null;
+        } catch (Throwable th) {
+            C9079Context.exit();
+            throw th;
+        }
+    }
+
+    @JSFunction
+    public final boolean isCompiled(@Nullable Object obj) {
+        return ScriptManagerCompat.Companion.isCompiled(StringsKt__StringsKt.removeSuffix(resolveScriptName(obj), (CharSequence) ".js"));
+    }
+
+    @JSFunction
+    public final boolean isCompiling(@Nullable Object obj) {
+        if (obj == null || Undefined.isUndefined(obj)) {
+            ArrayList<File> findAll = BotFinder.INSTANCE.findAll();
+            ArrayList<String> arrayList = new ArrayList(C8815e.collectionSizeOrDefault(findAll, 10));
+            Iterator<T> it = findAll.iterator();
+            while (it.hasNext()) {
+                arrayList.add(it.next().getName());
+            }
+            for (String str : arrayList) {
+                ScriptManagerCompat.Companion companion = ScriptManagerCompat.Companion;
+                if (companion.isCompiling().get(str) != null) {
+                    Boolean bool = companion.isCompiling().get(str);
+                    Intrinsics.checkNotNull(bool);
+                    if (bool.booleanValue()) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        ScriptManagerCompat.Companion companion2 = ScriptManagerCompat.Companion;
+        if (companion2.isCompiling().get(StringsKt__StringsKt.removeSuffix(obj.toString(), (CharSequence) ".js")) == null) {
+            return false;
+        }
+        Boolean bool2 = companion2.isCompiling().get(StringsKt__StringsKt.removeSuffix(obj.toString(), (CharSequence) ".js"));
+        Intrinsics.checkNotNull(bool2);
+        return bool2.booleanValue();
+    }
+
+    @JSFunction
+    public final boolean isOn(@Nullable Object obj) {
+        Object obj2;
+        ScriptSettings scriptSettings = new ScriptSettings(StringsKt__StringsKt.removeSuffix(resolveScriptName(obj), (CharSequence) ".js"), 0, 2, null);
+        Boolean bool = Boolean.FALSE;
+        File file = new File(scriptSettings.getBaseFile(), scriptSettings.getSettingsFileName());
+        if (file.exists()) {
+            try {
+                JSONObject jSONObject = new JSONObject(FileManager.INSTANCE.read(file)).getJSONObject("option");
+                KClass orCreateKotlinClass = Reflection.getOrCreateKotlinClass(Boolean.class);
+                if (Intrinsics.areEqual(orCreateKotlinClass, Reflection.getOrCreateKotlinClass(Boolean.TYPE))) {
+                    obj2 = Boolean.valueOf(jSONObject.getBoolean(SharedVar.Pref.SCRIPT_POWER));
+                } else if (Intrinsics.areEqual(orCreateKotlinClass, Reflection.getOrCreateKotlinClass(Integer.TYPE))) {
+                    obj2 = Integer.valueOf(jSONObject.getInt(SharedVar.Pref.SCRIPT_POWER));
+                } else if (Intrinsics.areEqual(orCreateKotlinClass, Reflection.getOrCreateKotlinClass(Long.TYPE))) {
+                    obj2 = Long.valueOf(jSONObject.getLong(SharedVar.Pref.SCRIPT_POWER));
+                } else if (Intrinsics.areEqual(orCreateKotlinClass, Reflection.getOrCreateKotlinClass(Double.TYPE))) {
+                    obj2 = Double.valueOf(jSONObject.getDouble(SharedVar.Pref.SCRIPT_POWER));
+                } else if (Intrinsics.areEqual(orCreateKotlinClass, Reflection.getOrCreateKotlinClass(String.class))) {
+                    obj2 = jSONObject.getString(SharedVar.Pref.SCRIPT_POWER);
+                } else if (Intrinsics.areEqual(orCreateKotlinClass, Reflection.getOrCreateKotlinClass(JSONObject.class))) {
+                    obj2 = jSONObject.getJSONObject(SharedVar.Pref.SCRIPT_POWER);
+                } else if (Intrinsics.areEqual(orCreateKotlinClass, Reflection.getOrCreateKotlinClass(JSONArray.class))) {
+                    obj2 = jSONObject.getJSONArray(SharedVar.Pref.SCRIPT_POWER);
+                } else {
+                    obj2 = jSONObject.get(SharedVar.Pref.SCRIPT_POWER);
+                }
+                if (obj2 != null) {
+                    bool = (Boolean) obj2;
+                } else {
+                    throw new NullPointerException("null cannot be cast to non-null type kotlin.Boolean");
+                }
+            } catch (Exception unused) {
+            }
+        }
+        return bool.booleanValue();
+    }
+
+    @JSFunction
+    public final boolean isTerminated(@Nullable Object obj) {
+        return ScriptManagerCompat.Companion.isTerminated(resolveScriptName(obj));
+    }
+
+    @JSFunction
+    public final boolean makeNoti(@NotNull String str, @NotNull String str2, @Nullable Integer num) {
+        Intrinsics.checkNotNullParameter(str, Constants.RESPONSE_TITLE);
+        Intrinsics.checkNotNullParameter(str2, FirebaseAnalytics.Param.CONTENT);
+        MainApplication.Companion companion = MainApplication.Companion;
+        Object systemService = companion.getContext().getSystemService("notification");
+        Objects.requireNonNull(systemService, "null cannot be cast to non-null type android.app.NotificationManager");
+        try {
+            companion.getUIHandler().post(new Api$makeNoti$1(str, str2, (NotificationManager) systemService, num));
+            return true;
+        } catch (Exception unused) {
+            return false;
+        }
+    }
+
+    @JSFunction
+    public final boolean markAsRead(@NotNull String str, @NotNull Object obj) {
+        Intrinsics.checkNotNullParameter(str, "room");
+        Intrinsics.checkNotNullParameter(obj, "packageName");
+        if (Undefined.isUndefined(obj) || !(obj instanceof String)) {
+            return MessageSender.markAsRead$default(new MessageSender(this.scriptName), str, false, 2, null);
+        }
+        return MessageSender.markAsRead$default(new MessageSender(this.scriptName), str, (String) obj, false, 4, null);
+    }
+
+    @JSFunction
+    public final boolean off(@Nullable Object obj) {
+        Object obj2;
+        if (obj == null || Undefined.isUndefined(obj)) {
+            ScriptManagerCompat.Companion.putOnAll(false);
+            return true;
+        }
+        String obj3 = obj.toString();
+        if (!new File(SharedVar.Companion.getBotsPath(), StringsKt__StringsKt.removeSuffix(obj3, (CharSequence) ".js")).exists()) {
+            return false;
+        }
+        ScriptSettings scriptSettings = new ScriptSettings(StringsKt__StringsKt.removeSuffix(obj3, (CharSequence) ".js"), 0, 2, null);
+        Boolean bool = Boolean.FALSE;
+        File file = new File(scriptSettings.getBaseFile(), scriptSettings.getSettingsFileName());
+        if (file.exists()) {
+            try {
+                JSONObject jSONObject = new JSONObject(FileManager.INSTANCE.read(file)).getJSONObject("option");
+                KClass orCreateKotlinClass = Reflection.getOrCreateKotlinClass(Boolean.class);
+                if (Intrinsics.areEqual(orCreateKotlinClass, Reflection.getOrCreateKotlinClass(Boolean.TYPE))) {
+                    obj2 = Boolean.valueOf(jSONObject.getBoolean("ignoreApiOff"));
+                } else if (Intrinsics.areEqual(orCreateKotlinClass, Reflection.getOrCreateKotlinClass(Integer.TYPE))) {
+                    obj2 = Integer.valueOf(jSONObject.getInt("ignoreApiOff"));
+                } else if (Intrinsics.areEqual(orCreateKotlinClass, Reflection.getOrCreateKotlinClass(Long.TYPE))) {
+                    obj2 = Long.valueOf(jSONObject.getLong("ignoreApiOff"));
+                } else if (Intrinsics.areEqual(orCreateKotlinClass, Reflection.getOrCreateKotlinClass(Double.TYPE))) {
+                    obj2 = Double.valueOf(jSONObject.getDouble("ignoreApiOff"));
+                } else if (Intrinsics.areEqual(orCreateKotlinClass, Reflection.getOrCreateKotlinClass(String.class))) {
+                    obj2 = jSONObject.getString("ignoreApiOff");
+                } else if (Intrinsics.areEqual(orCreateKotlinClass, Reflection.getOrCreateKotlinClass(JSONObject.class))) {
+                    obj2 = jSONObject.getJSONObject("ignoreApiOff");
+                } else if (Intrinsics.areEqual(orCreateKotlinClass, Reflection.getOrCreateKotlinClass(JSONArray.class))) {
+                    obj2 = jSONObject.getJSONArray("ignoreApiOff");
+                } else {
+                    obj2 = jSONObject.get("ignoreApiOff");
+                }
+                if (obj2 != null) {
+                    bool = (Boolean) obj2;
+                } else {
+                    throw new NullPointerException("null cannot be cast to non-null type kotlin.Boolean");
+                }
+            } catch (Exception unused) {
+            }
+        }
+        if (bool.booleanValue()) {
+            return false;
+        }
+        ScriptManagerCompat.Companion.putOn(StringsKt__StringsKt.removeSuffix(obj3, (CharSequence) ".js"), false);
+        return true;
+    }
+
+    @JSFunction
+    /* renamed from: on */
+    public final boolean m4187on(@Nullable Object obj) {
+        if (obj == null || Undefined.isUndefined(obj)) {
+            ScriptManagerCompat.Companion.putOnAll(true);
+        } else {
+            String obj2 = obj.toString();
+            if (!new File(SharedVar.Companion.getBotsPath(), StringsKt__StringsKt.removeSuffix(obj2, (CharSequence) ".js")).exists()) {
+                return false;
+            }
+            ScriptManagerCompat.Companion.putOn(StringsKt__StringsKt.removeSuffix(obj2, (CharSequence) ".js"), true);
+        }
+        return true;
+    }
+
+    @Nullable
+    @JSFunction
+    public final String papagoTranslate(@NotNull String str, @NotNull String str2, @NotNull String str3, @Nullable Boolean bool) {
+        Intrinsics.checkNotNullParameter(str, FirebaseAnalytics.Param.SOURCE);
+        Intrinsics.checkNotNullParameter(str2, "target");
+        Intrinsics.checkNotNullParameter(str3, "str");
+        return doPapagoTranslate(str, str2, str3, bool);
+    }
+
+    @JSFunction
+    public final int prepare(@Nullable Object obj, @Nullable Boolean bool) {
+        if (obj == null || Undefined.isUndefined(obj)) {
+            ArrayList<File> findAll = BotFinder.INSTANCE.findAll();
+            ArrayList<String> arrayList = new ArrayList(C8815e.collectionSizeOrDefault(findAll, 10));
+            Iterator<T> it = findAll.iterator();
+            while (it.hasNext()) {
+                arrayList.add(it.next().getName());
+            }
+            int i = 0;
+            for (String str : arrayList) {
+                if (!isCompiled(str)) {
+                    ScriptManagerCompat.Companion companion = ScriptManagerCompat.Companion;
+                    if (companion.isCompiling().get(str) != null) {
+                        Boolean bool2 = companion.isCompiling().get(str);
+                        Intrinsics.checkNotNull(bool2);
+                        if (bool2.booleanValue()) {
+                        }
+                    }
+                    reload(str, bool);
+                    i++;
+                }
+            }
+            return i;
+        } else if (isCompiled(obj)) {
+            return 2;
+        } else {
+            return reload(obj, bool) ? 1 : 0;
+        }
+    }
+
+    @JSFunction
+    public final boolean reload(@Nullable Object obj, @Nullable Boolean bool) {
+        boolean z = false;
+        if (obj == null || Undefined.isUndefined(obj)) {
+            ScriptManagerCompat.Companion.initializeAll(false);
+            return true;
+        }
+        String obj2 = obj.toString();
+        if (!new File(SharedVar.Companion.getBotsPath(), StringsKt__StringsKt.removeSuffix(obj2, (CharSequence) ".js")).exists()) {
+            return false;
+        }
+        ScriptManagerCompat.Companion companion = ScriptManagerCompat.Companion;
+        String removeSuffix = StringsKt__StringsKt.removeSuffix(obj2, (CharSequence) ".js");
+        if (bool != null) {
+            z = bool.booleanValue();
+        }
+        return ((Boolean) ScriptManagerCompat.Companion.initializeScript$default(companion, removeSuffix, false, !z, false, null, 24, null).getFirst()).booleanValue();
+    }
+
+    @JSFunction
+    public final boolean replyRoom(@NotNull String str, @NotNull String str2, boolean z) {
+        Intrinsics.checkNotNullParameter(str, "room");
+        Intrinsics.checkNotNullParameter(str2, "str");
+        try {
+            return new SessionCacheReplier(str, StringsKt__StringsKt.removeSuffix(this.scriptName, (CharSequence) ".js")).reply(str, str2, z);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Deprecated(message = "Moved to MsgBot", replaceWith = @ReplaceWith(expression = "MsgBot(cx).toast(str, length)", imports = {"com.xfl.msgbot.script.api.compat.MsgBot", "android.widget.Toast", "com.xfl.msgbot.application.MainApplication"}))
+    @JSFunction
+    public final void showToast(@NotNull String str, int i) {
+        Intrinsics.checkNotNullParameter(str, "str");
+        MainApplication.Companion.getUIHandler().post(new Api$showToast$1(str, i));
+    }
+
+    @Override // java.lang.Object
+    @NotNull
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClassName());
+        sb.append('[');
+        return outline.m1852A(sb, this.scriptName, ']');
+    }
+
+    @JSFunction
+    public final boolean unload(@Nullable Object obj) {
+        if (obj == null || Undefined.isUndefined(obj)) {
+            return false;
+        }
+        return ScriptManagerCompat.Companion.unloadScript(StringsKt__StringsKt.removeSuffix(obj.toString(), (CharSequence) ".js"));
+    }
+}
